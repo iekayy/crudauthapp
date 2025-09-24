@@ -1,5 +1,7 @@
 "use client";
-import React, { useState } from 'react'
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+
 
 import {
     Table,
@@ -13,6 +15,7 @@ import { Search } from 'lucide-react'
 import { Input } from './ui/input'
 import { Combobox } from './ui/combo-box'
 import { getPlants } from '@/actions/plant.action';
+import { Skeleton } from './ui/skeleton';
   
   
 
@@ -28,6 +31,8 @@ import { getPlants } from '@/actions/plant.action';
     const [searchTerm,setSearchTerm]= useState("");
     const [selectedCategory,setSelectedCategory ] = useState(""); 
 
+    const router = useRouter();
+
 
      // Filter plants by name and category (if selected)
   const filteredPlants = plants?.userPlants?.filter(
@@ -35,7 +40,73 @@ import { getPlants } from '@/actions/plant.action';
       plant.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
       (selectedCategory === "" || plant.category === selectedCategory)
   );
-  console.log(plants);
+
+
+  if (!plants) {
+    return (
+      <div className="w-full space-y-4">
+        <div className="flex items-center gap-2 py-4">
+          <Skeleton className="h-10 w-full max-w-sm" />
+          <Skeleton className="h-10 w-32" />
+          <Skeleton className="h-10 w-32" />
+        </div>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>
+                <Skeleton className="w-full h-4" />
+              </TableHead>
+              <TableHead>
+                <Skeleton className="w-full h-4" />
+              </TableHead>
+              <TableHead>
+                <Skeleton className="w-full h-4" />
+              </TableHead>
+              <TableHead>
+                <Skeleton className="w-full h-4" />
+              </TableHead>
+              <TableHead>
+                <Skeleton className="w-full h-4" />
+              </TableHead>
+              <TableHead className="text-right">
+                <Skeleton className="w-full h-4" />
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {Array.from({ length: 5 }).map((_, i) => (
+              <TableRow key={i}>
+                <TableCell>
+                  <Skeleton className="w-full h-4" />
+                </TableCell>
+                <TableCell>
+                  <Skeleton className="w-full h-4" />
+                </TableCell>
+                <TableCell>
+                  <Skeleton className="w-full h-4" />
+                </TableCell>
+                <TableCell>
+                  <Skeleton className="w-full h-4" />
+                </TableCell>
+                <TableCell>
+                  <Skeleton className="w-full h-4" />
+                </TableCell>
+                <TableCell className="text-right">
+                  <Skeleton className="w-full h-4" />
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    );
+  }
+
+
+
+
+
+
 
     return (
 
@@ -64,8 +135,16 @@ import { getPlants } from '@/actions/plant.action';
           </TableRow>
         </TableHeader>
         <TableBody>
-          {filteredPlants?.map((plant) => (
-            <TableRow key={plant.id}>
+          {filteredPlants?.map((plant) => {
+            const slugifiedName = plant.name.toLowerCase().replace(/\s+/g, "-");
+            const slug = `${plant.id}--${slugifiedName}`;
+            const plantUrl = `/plants/${slug}`;
+            
+            
+            return(
+
+
+            <TableRow key={plant.id} onClick={()=> router.push(plantUrl)}>
               <TableCell >{plant.id}</TableCell>
               <TableCell >{plant.name}</TableCell>
 
@@ -80,7 +159,7 @@ import { getPlants } from '@/actions/plant.action';
                 </div>
               </TableCell>
             </TableRow>
-          ))}
+          )})}
         </TableBody>
        
       </Table>

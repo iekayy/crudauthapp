@@ -29,4 +29,11 @@ export async function getPlants(searchTerm?: string) {
     } catch (error) {
       console.log("Error in getPlants", error);
     }
-    }  
+    
+  }  
+
+  export async function getPlantById(id: string) {
+   return await prisma.plants.findUnique({
+      where: { id },
+    });
+  }
