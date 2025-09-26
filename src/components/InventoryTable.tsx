@@ -16,6 +16,7 @@ import { Input } from './ui/input'
 import { Combobox } from './ui/combo-box'
 import { getPlants } from '@/actions/plant.action';
 import { Skeleton } from './ui/skeleton';
+import CreateDialog from './CreateDialog';
   
   
 
@@ -119,6 +120,8 @@ import { Skeleton } from './ui/skeleton';
                 </div>
 
                 <Combobox value={selectedCategory} onChange={(val)=>{setSelectedCategory(val)}}/>
+
+                  <CreateDialog/>
 
             </div>
             <Table>
