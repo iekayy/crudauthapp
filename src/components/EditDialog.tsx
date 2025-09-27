@@ -11,26 +11,35 @@ import {
     AlertDialogTrigger,
   } from "@/components/ui/alert-dialog"
   import { Button } from "@/components/ui/button"
-import { Sprout } from 'lucide-react';
+import { EditIcon, Sprout } from 'lucide-react';
 import { Combobox } from './ui/combo-box';
 import { Label } from './ui/label';
 import { Textarea } from './ui/textarea';
 import { Input } from "./ui/input";
-import { createPlant } from '@/actions/plant.action';
+import { createPlant, editPlant, getPlantById } from '@/actions/plant.action';
 import toast from 'react-hot-toast';
 import ImageUpload from './ImageUpload';
 
 
-function CreateDialog() {
+type Plant = NonNullable<Awaited<ReturnType<typeof getPlantById>>>;
+
+interface EditDialogProps {
+  plant: Plant;
+} 
+
+
+export  function EditDialog({plant}:EditDialogProps) {
+
+    
 
     const [formData, setFormData] = useState({
-        name: "",
-        description: "",
-        stock: 1,
-        price: 1,
-        category: "",
-        userId: "",
-        imageUrl: "",
+        name: plant.name.trim(),
+        description: (plant.description || "").trim(),
+        stock: plant.stock,
+        price: plant.price,
+        category: plant.category.trim(),
+        userId: plant.userId.trim(),
+        imageUrl: plant.imageUrl || "",
       });
 
       const handleChange = (field: string, value: string | number) => {
@@ -40,12 +49,12 @@ function CreateDialog() {
       const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-          const newPlant = await createPlant(formData);
-          console.log("plant created: ", newPlant);
-          toast.success("Plant created successfully");
+          const newPlant = await editPlant(plant.id,formData);
+          console.log("plant edited: ", newPlant);
+          toast.success("Plant edited successfully");
         } catch (error) {
-          console.error("error creating plant", error);
-          toast.error("Failed to create plant");
+          console.error("error edtitng plant", error);
+          toast.error("Failed to edit plant");
         }
       };
 
@@ -55,10 +64,10 @@ function CreateDialog() {
           <AlertDialog>
             <AlertDialogTrigger asChild>
 
-              <Button variant="default" className='ml-auto flex items-center gap-2' asChild>
+              <Button variant="secondary" className='ml-auto flex items-center gap-2' asChild>
                 <span>
-                    <Sprout className='w-4 h-4'/>
-                    Add Plant
+                    <EditIcon className='w-4 h-4'/>
+                    Edit Plant
                 </span>
 
               </Button>
@@ -135,6 +144,7 @@ function CreateDialog() {
           </div>
 
 
+
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <AlertDialogAction type='submit'>Submit</AlertDialogAction>
@@ -148,4 +158,4 @@ function CreateDialog() {
       
 
 
-export default CreateDialog;
+export default EditDialog;

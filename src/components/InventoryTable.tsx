@@ -17,6 +17,8 @@ import { Combobox } from './ui/combo-box'
 import { getPlants } from '@/actions/plant.action';
 import { Skeleton } from './ui/skeleton';
 import CreateDialog from './CreateDialog';
+import EditDialog from './EditDialog';
+import DeleteDialog from './DeleteDialog';
   
   
 
@@ -157,7 +159,9 @@ import CreateDialog from './CreateDialog';
               
 
               <TableCell className="text-right">
-                <div className='flex justify-end space-x-4'>
+                <div className='flex justify-end space-x-4' onClick={(e)=>e.stopPropagation()}>
+                  <EditDialog plant={plant}/>
+                  <DeleteDialog plant = {plant}/>
                   
                 </div>
               </TableCell>
